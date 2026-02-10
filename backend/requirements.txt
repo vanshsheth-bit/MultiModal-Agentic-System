@@ -1,0 +1,37 @@
+fastapi==0.115.0
+uvicorn[standard]==0.30.0
+# Bumped to satisfy embedchain/sqlalchemy requirement (>=2.0.27,<3.0.0)
+sqlalchemy==2.0.27
+alembic==1.13.1
+psycopg2-binary==2.9.9
+redis==5.0.1
+boto3==1.34.11
+pyjwt==2.8.0
+httpx==0.27.0
+wheel==0.45.1
+pytest==8.2.0
+pytest-asyncio==0.23.5
+requests==2.31.0
+sentry-sdk[fastapi]==1.40.6
+prometheus-fastapi-instrumentator==7.0.0
+python-multipart==0.0.22
+packaging>=23.2,<24.0
+
+# Core ML / RAG and multimodal dependencies
+pymilvus==2.3.4
+PyPDF2==3.0.1
+assemblyai==0.33.0
+openai>=1.13.3,<2.0.0
+crewai==0.28.8
+langchain==0.1.11
+langchain-core==0.1.52
+pydantic-settings==2.1.0
+sentence-transformers==2.7.0
+huggingface-hub==0.24.7
+transformers==4.41.2
+tokenizers==0.19.1
+safetensors==0.4.3
+
+langdetect==1.0.9
+
+elasticsearch==8.12.1

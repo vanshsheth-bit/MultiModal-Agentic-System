@@ -1,0 +1,57 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
+          pip install ruff black mypy pytest
+
+      - name: Run linters
+        run: |
+          cd backend
+          ruff check .
+          black --check .
+          mypy app/
+
+      - name: Run tests
+        run: |
+          cd backend
+          pytest tests/ -v
+
+  build-and-push:
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build and push Docker images
+        run: |
+          docker build -t ${{ secrets.DOCKER_REGISTRY }}/api:${{ github.sha }} backend/
+          docker push ${{ secrets.DOCKER_REGISTRY }}/api:${{ github.sha }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl set image deployment/api api=${{ secrets.DOCKER_REGISTRY }}/api:${{ github.sha }}
+          kubectl rollout status deployment/api
